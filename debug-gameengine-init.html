@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GameEngine初始化调试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .log { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e9; color: #2e7d32; }
+        .info { background: #e3f2fd; color: #1565c0; }
+    </style>
+</head>
+<body>
+    <h1>GameEngine初始化调试</h1>
+    <div id="logs"></div>
+    
+    <!-- 创建完整的游戏容器结构 -->
+    <div class="game-container">
+        <div class="game-board"></div>
+        <div id="current-score">0</div>
+        <div id="high-score">0</div>
+        <div id="game-status">准备中...</div>
+        <button id="start-btn">开始</button>
+        <button id="pause-btn">暂停</button>
+        <button id="restart-btn">重新开始</button>
+        <button id="sound-btn">音效</button>
+    </div>
+
+    <!-- 按照正确顺序加载所有依赖 -->
+    <script src="gameModels.js"></script>
+    <script src="scoreSystem.js"></script>
+    <script src="storageManager.js"></script>
+    <script src="audioSystem.js"></script>
+    <script src="performanceOptimizer.js"></script>
+    <script src="renderer.js"></script>
+    <script src="inputHandler.js"></script>
+    <script src="gameEngine.js"></script>
+
+    <script>
+        const logsDiv = document.getElementById('logs');
+        
+        function addLog(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logsDiv.appendChild(div);
+            console.log(message);
+        }
+
+        // 重写console方法来捕获所有日志
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        
+        console.log = function(...args) {
+            addLog(args.join(' '), 'info');
+            originalConsoleLog.apply(console, args);
+        };
+        
+        console.error = function(...args) {
+            addLog(args.join(' '), 'error');
+            originalConsoleError.apply(console, args);
+        };
+
+        async function testGameEngineInit() {
+            addLog('开始GameEngine初始化测试', 'info');
+            
+            try {
+                // 检查所有必需的依赖
+                addLog('检查依赖项...', 'info');
+                
+                const dependencies = [
+                    'createInitialGameState', 'createScoreSystem', 'createStorageManagerWithFallback',
+                    'GameGrid', 'MatchDetector', 'AudioSystem', 'Renderer', 'InputHandler',
+                    'createGameEngine', 'GAME_CONFIG'
+                ];
+                
+                let missingDeps = [];
+                dependencies.forEach(dep => {
+                    if (typeof window[dep] === 'undefined') {
+                        missingDeps.push(dep);
+                    }
+                });
+                
+                if (missingDeps.length > 0) {
+                    addLog(`❌ 缺少依赖: ${missingDeps.join(', ')}`, 'error');
+                    return;
+                }
+                
+                addLog('✅ 所有依赖项检查通过', 'success');
+                
+                // 检查DOM元素
+                addLog('检查DOM元素...', 'info');
+                const gameContainer = document.querySelector('.game-container');
+                const gameBoard = gameContainer.querySelector('.game-board');
+                const currentScore = gameContainer.querySelector('#current-score');
+                const highScore = gameContainer.querySelector('#high-score');
+                const gameStatus = gameContainer.querySelector('#game-status');
+                
+                addLog(`游戏容器: ${gameContainer ? '✅' : '❌'}`, gameContainer ? 'success' : 'error');
+                addLog(`游戏板: ${gameBoard ? '✅' : '❌'}`, gameBoard ? 'success' : 'error');
+                addLog(`当前分数: ${currentScore ? '✅' : '❌'}`, currentScore ? 'success' : 'error');
+                addLog(`最高分: ${highScore ? '✅' : '❌'}`, highScore ? 'success' : 'error');
+                addLog(`游戏状态: ${gameStatus ? '✅' : '❌'}`, gameStatus ? 'success' : 'error');
+                
+                // 创建GameEngine
+                addLog('创建GameEngine实例...', 'info');
+                const gameEngine = createGameEngine(gameContainer);
+                addLog('✅ GameEngine实例创建成功', 'success');
+                
+                // 初始化GameEngine
+                addLog('开始初始化GameEngine...', 'info');
+                const initResult = await gameEngine.initialize();
+                
+                if (initResult) {
+                    addLog('🎉 GameEngine初始化成功！', 'success');
+                    
+                    const status = gameEngine.getStatus();
+                    addLog(`状态: ${status.state}`, 'info');
+                    addLog(`分数: ${status.score}`, 'info');
+                    addLog(`最高分: ${status.highScore}`, 'info');
+                    
+                    // 清理
+                    gameEngine.destroy();
+                    addLog('✅ GameEngine清理完成', 'success');
+                } else {
+                    addLog('❌ GameEngine初始化失败', 'error');
+                }
+                
+            } catch (error) {
+                addLog(`❌ 测试过程中发生错误: ${error.message}`, 'error');
+                addLog(`错误堆栈: ${error.stack}`, 'error');
+            }
+        }
+
+        // 页面加载完成后运行测试
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('页面加载完成，开始测试', 'info');
+            setTimeout(testGameEngineInit, 100); // 稍微延迟以确保所有脚本都加载完成
+        });
+    </script>
+</body>
+</html>

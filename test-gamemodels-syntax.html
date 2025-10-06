@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GameModels语法测试</title>
+</head>
+<body>
+    <h1>GameModels语法测试</h1>
+    <div id="result"></div>
+
+    <script>
+        const resultDiv = document.getElementById('result');
+        
+        function addResult(message, isSuccess) {
+            const div = document.createElement('div');
+            div.style.color = isSuccess ? 'green' : 'red';
+            div.style.margin = '5px 0';
+            div.textContent = message;
+            resultDiv.appendChild(div);
+        }
+
+        // 添加时间戳来避免缓存
+        const timestamp = new Date().getTime();
+        const script = document.createElement('script');
+        script.src = `gameModels.js?t=${timestamp}`;
+        
+        script.onload = function() {
+            addResult('✅ gameModels.js 加载成功', true);
+            
+            // 测试导出
+            if (typeof GHOST_TYPES !== 'undefined') {
+                addResult('✅ GHOST_TYPES 导出成功', true);
+            } else {
+                addResult('❌ GHOST_TYPES 导出失败', false);
+            }
+            
+            if (typeof createInitialGameState !== 'undefined') {
+                addResult('✅ createInitialGameState 导出成功', true);
+                
+                try {
+                    const gameState = createInitialGameState();
+                    addResult('✅ createInitialGameState 执行成功', true);
+                } catch (error) {
+                    addResult('❌ createInitialGameState 执行失败: ' + error.message, false);
+                }
+            } else {
+                addResult('❌ createInitialGameState 导出失败', false);
+            }
+        };
+        
+        script.onerror = function(error) {
+            addResult('❌ gameModels.js 加载失败: ' + error.message, false);
+        };
+        
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>渲染器修复测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .log { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e9; color: #2e7d32; }
+        .game-board { 
+            display: grid; 
+            grid-template-columns: repeat(8, 40px); 
+            gap: 2px; 
+            margin: 20px 0; 
+        }
+        .game-cell { 
+            width: 40px; 
+            height: 40px; 
+            border: 1px solid #ccc; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+    </style>
+</head>
+<body>
+    <h1>渲染器修复测试</h1>
+    <div id="logs"></div>
+    
+    <!-- 创建渲染器需要的DOM结构 -->
+    <div class="game-container">
+        <div class="game-board" id="game-board"></div>
+        <div id="current-score">0</div>
+        <div id="high-score">0</div>
+        <div id="game-status">准备中...</div>
+    </div>
+
+    <!-- 加载依赖 -->
+    <script src="gameModels.js"></script>
+    <script src="renderer.js"></script>
+
+    <script>
+        const logsDiv = document.getElementById('logs');
+        
+        function addLog(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logsDiv.appendChild(div);
+            console.log(message);
+        }
+
+        function testRenderer() {
+            addLog('开始渲染器测试', 'info');
+            
+            try {
+                // 检查依赖
+                if (typeof Renderer === 'undefined') {
+                    addLog('❌ Renderer类未找到', 'error');
+                    return;
+                }
+                
+                if (typeof GameGrid === 'undefined') {
+                    addLog('❌ GameGrid类未找到', 'error');
+                    return;
+                }
+                
+                addLog('✅ 依赖检查通过', 'success');
+                
+                // 获取DOM元素
+                const gameBoard = document.getElementById('game-board');
+                const scoreElements = {
+                    currentScore: document.getElementById('current-score'),
+                    highScore: document.getElementById('high-score')
+                };
+                const statusElement = document.getElementById('game-status');
+                
+                addLog('✅ DOM元素获取成功', 'success');
+                
+                // 创建渲染器
+                addLog('创建渲染器实例...', 'info');
+                const renderer = new Renderer(gameBoard, scoreElements, statusElement);
+                addLog('✅ 渲染器实例创建成功', 'success');
+                
+                // 初始化渲染器
+                addLog('初始化渲染器...', 'info');
+                renderer.initialize();
+                addLog('✅ 渲染器初始化成功', 'success');
+                
+                // 创建游戏网格并渲染
+                addLog('创建游戏网格...', 'info');
+                const gameGrid = new GameGrid();
+                addLog('✅ 游戏网格创建成功', 'success');
+                
+                // 渲染网格
+                addLog('渲染游戏网格...', 'info');
+                renderer.renderGrid(gameGrid);
+                addLog('✅ 游戏网格渲染成功', 'success');
+                
+                // 测试renderGame方法
+                addLog('测试renderGame方法...', 'info');
+                renderer.renderGame(gameGrid);
+                addLog('✅ renderGame方法执行成功', 'success');
+                
+                // 测试防抖渲染
+                if (renderer.debouncedRender) {
+                    addLog('测试防抖渲染...', 'info');
+                    renderer.debouncedRender();
+                    addLog('✅ 防抖渲染执行成功', 'success');
+                } else {
+                    addLog('⚠️ 防抖渲染未设置', 'error');
+                }
+                
+                addLog('🎉 所有渲染器测试通过！', 'success');
+                
+            } catch (error) {
+                addLog(`❌ 渲染器测试失败: ${error.message}`, 'error');
+                addLog(`错误堆栈: ${error.stack}`, 'error');
+            }
+        }
+
+        // 页面加载完成后运行测试
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('页面加载完成', 'info');
+            setTimeout(testRenderer, 100);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="小鬼消消乐 - 一个有趣的三消游戏">
+    <meta name="keywords" content="游戏,三消,小鬼,消消乐">
+    <meta name="author" content="Ghost Match Game">
+    <title>小鬼消消乐 👻</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 游戏标题 -->
+        <header class="game-header">
+            <h1>👻 小鬼消消乐 👻</h1>
+        </header>
+
+        <!-- 分数显示区域 -->
+        <div class="score-section">
+            <div class="score-item">
+                <span class="score-label">当前分数:</span>
+                <span id="current-score" class="score-value">0</span>
+            </div>
+            <div class="score-item">
+                <span class="score-label">最高分数:</span>
+                <span id="high-score" class="score-value">0</span>
+            </div>
+            <div class="score-item">
+                <span class="score-label">等级:</span>
+                <span id="score-rank" class="score-rank">E - 初学者</span>
+            </div>
+        </div>
+
+        <!-- 游戏状态显示区域 -->
+        <div class="game-stats-section">
+            <div class="stat-item">
+                <span id="chain-level" class="chain-indicator"></span>
+            </div>
+            <div class="stat-item">
+                <span id="combo-count" class="combo-indicator"></span>
+            </div>
+            <div class="stat-item">
+                <span id="milestone-progress" class="milestone-indicator"></span>
+            </div>
+        </div>
+
+        <!-- 游戏控制按钮 -->
+        <div class="control-section">
+            <button id="start-btn" class="control-btn">🎮 开始游戏</button>
+            <button id="pause-btn" class="control-btn" disabled>⏸️ 暂停</button>
+            <button id="restart-btn" class="control-btn">🔄 重新开始</button>
+            <button id="sound-btn" class="control-btn">🔊 音效</button>
+        </div>
+
+        <!-- 游戏网格容器 -->
+        <div class="game-board-container">
+            <div id="game-board" class="game-board">
+                <!-- 8x8 网格将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 游戏状态提示 -->
+        <div id="game-status" class="game-status">
+            <p>点击"开始游戏"开始你的小鬼消消乐之旅！</p>
+        </div>
+    </div>
+
+    <script src="gameModels.js"></script>
+    <script src="scoreSystem.js"></script>
+    <script src="storageManager.js"></script>
+    <script src="audioSystem.js"></script>
+    <script src="performanceOptimizer.js"></script>
+    <script src="renderer.js"></script>
+    <script src="inputHandler.js"></script>
+    <script src="gameEngine.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>暂停按钮修复测试</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .game-container {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .control-section {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .control-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .control-btn:hover:not(:disabled) {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+        .control-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(8, 40px);
+            gap: 2px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        .game-cell {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: white;
+            border-radius: 4px;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px 0;
+        }
+        .log-info { color: #007bff; }
+        .log-success { color: #28a745; }
+        .log-warning { color: #ffc107; }
+        .log-error { color: #dc3545; }
+        .status-display {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .button-status {
+            display: inline-block;
+            margin: 5px 10px;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .button-enabled { background: #d4edda; color: #155724; }
+        .button-disabled { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 暂停按钮修复测试</h1>
+        <p>测试暂停按钮在不同游戏状态下的启用/禁用状态</p>
+        
+        <div class="game-container">
+            <h3>游戏控制区域</h3>
+            <div class="control-section">
+                <button id="start-btn" class="control-btn">🎮 开始游戏</button>
+                <button id="pause-btn" class="control-btn" disabled>⏸️ 暂停</button>
+                <button id="restart-btn" class="control-btn">🔄 重新开始</button>
+                <button id="sound-btn" class="control-btn">🔊 音效</button>
+            </div>
+            
+            <div class="status-display">
+                <strong>当前游戏状态:</strong> <span id="game-state">未初始化</span>
+                <div id="button-status"></div>
+            </div>
+            
+            <div class="game-board" id="game-board">
+                <!-- 游戏网格将动态生成 -->
+            </div>
+            
+            <div>
+                <strong>分数:</strong> <span id="current-score">0</span> | 
+                <strong>最高分:</strong> <span id="high-score">0</span>
+            </div>
+        </div>
+        
+        <div class="log" id="test-log">
+            <div class="log-entry log-info">测试日志将显示在这里...</div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <button onclick="runButtonStateTest()" class="control-btn">🧪 运行按钮状态测试</button>
+            <button onclick="clearLog()" class="control-btn">🗑️ 清除日志</button>
+        </div>
+    </div>
+
+    <!-- 加载游戏脚本 -->
+    <script src="gameModels.js"></script>
+    <script src="scoreSystem.js"></script>
+    <script src="storageManager.js"></script>
+    <script src="audioSystem.js"></script>
+    <script src="performanceOptimizer.js"></script>
+    <script src="renderer.js"></script>
+    <script src="inputHandler.js"></script>
+    <script src="gameEngine.js"></script>
+
+    <script>
+        let gameEngine = null;
+        let testLog = document.getElementById('test-log');
+        
+        function addLog(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            testLog.appendChild(entry);
+            testLog.scrollTop = testLog.scrollHeight;
+            console.log(message);
+        }
+        
+        function clearLog() {
+            testLog.innerHTML = '<div class="log-entry log-info">日志已清除</div>';
+        }
+        
+        function updateButtonStatus() {
+            const buttons = ['start-btn', 'pause-btn', 'restart-btn', 'sound-btn'];
+            const statusDiv = document.getElementById('button-status');
+            let statusHTML = '<br><strong>按钮状态:</strong><br>';
+            
+            buttons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    const isDisabled = btn.disabled;
+                    const isVisible = btn.style.display !== 'none';
+                    statusHTML += `<span class="button-status ${isDisabled ? 'button-disabled' : 'button-enabled'}">
+                        ${btnId}: ${isDisabled ? '禁用' : '启用'} ${isVisible ? '(可见)' : '(隐藏)'}
+                    </span>`;
+                }
+            });
+            
+            statusDiv.innerHTML = statusHTML;
+        }
+        
+        function updateGameState() {
+            const stateSpan = document.getElementById('game-state');
+            if (gameEngine) {
+                stateSpan.textContent = gameEngine.state || '未知';
+            } else {
+                stateSpan.textContent = '未初始化';
+            }
+            updateButtonStatus();
+        }
+        
+        async function initializeGame() {
+            try {
+                addLog('开始初始化游戏引擎...', 'info');
+                
+                const gameContainer = document.querySelector('.game-container');
+                gameEngine = createGameEngine(gameContainer);
+                
+                const initResult = await gameEngine.initialize();
+                
+                if (initResult) {
+                    addLog('✅ 游戏引擎初始化成功', 'success');
+                    updateGameState();
+                    
+                    // 监听状态变化
+                    gameEngine.on('gameStarted', () => {
+                        addLog('🎮 游戏已开始', 'success');
+                        updateGameState();
+                    });
+                    
+                    gameEngine.on('gamePaused', () => {
+                        addLog('⏸️ 游戏已暂停', 'warning');
+                        updateGameState();
+                    });
+                    
+                    gameEngine.on('gameResumed', () => {
+                        addLog('▶️ 游戏已继续', 'success');
+                        updateGameState();
+                    });
+                    
+                    gameEngine.on('gameOver', () => {
+                        addLog('🏁 游戏结束', 'info');
+                        updateGameState();
+                    });
+                    
+                } else {
+                    addLog('❌ 游戏引擎初始化失败', 'error');
+                }
+                
+            } catch (error) {
+                addLog(`❌ 初始化错误: ${error.message}`, 'error');
+            }
+        }
+        
+        async function runButtonStateTest() {
+            if (!gameEngine) {
+                addLog('游戏引擎未初始化，开始初始化...', 'info');
+                await initializeGame();
+                return;
+            }
+            
+            addLog('🧪 开始按钮状态测试...', 'info');
+            
+            // 测试1: 初始状态
+            addLog(`测试1 - 初始状态: ${gameEngine.state}`, 'info');
+            const pauseBtn = document.getElementById('pause-btn');
+            addLog(`暂停按钮禁用状态: ${pauseBtn.disabled}`, pauseBtn.disabled ? 'success' : 'error');
+            updateGameState();
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 测试2: 开始游戏
+            addLog('测试2 - 开始游戏...', 'info');
+            await gameEngine.startGame();
+            addLog(`游戏状态: ${gameEngine.state}`, 'info');
+            addLog(`暂停按钮禁用状态: ${pauseBtn.disabled}`, !pauseBtn.disabled ? 'success' : 'error');
+            updateGameState();
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 测试3: 暂停游戏
+            addLog('测试3 - 暂停游戏...', 'info');
+            gameEngine.pauseGame();
+            addLog(`游戏状态: ${gameEngine.state}`, 'info');
+            addLog(`暂停按钮文本: ${pauseBtn.textContent}`, 'info');
+            addLog(`暂停按钮禁用状态: ${pauseBtn.disabled}`, !pauseBtn.disabled ? 'success' : 'error');
+            updateGameState();
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 测试4: 继续游戏
+            addLog('测试4 - 继续游戏...', 'info');
+            gameEngine.resumeGame();
+            addLog(`游戏状态: ${gameEngine.state}`, 'info');
+            addLog(`暂停按钮文本: ${pauseBtn.textContent}`, 'info');
+            addLog(`暂停按钮禁用状态: ${pauseBtn.disabled}`, !pauseBtn.disabled ? 'success' : 'error');
+            updateGameState();
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 测试5: 停止游戏
+            addLog('测试5 - 停止游戏...', 'info');
+            gameEngine.stopGame();
+            addLog(`游戏状态: ${gameEngine.state}`, 'info');
+            addLog(`暂停按钮禁用状态: ${pauseBtn.disabled}`, pauseBtn.disabled ? 'success' : 'error');
+            updateGameState();
+            
+            addLog('🎉 按钮状态测试完成！', 'success');
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', async function() {
+            addLog('页面加载完成', 'info');
+            updateGameState();
+            
+            // 延迟初始化以便观察初始状态
+            setTimeout(() => {
+                addLog('点击"运行按钮状态测试"开始测试', 'info');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

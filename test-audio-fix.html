@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>音频系统修复测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .log { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e9; color: #2e7d32; }
+        .warning { background: #fff3e0; color: #f57c00; }
+        button { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .game-container {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .game-board { 
+            display: grid; 
+            grid-template-columns: repeat(8, 30px); 
+            gap: 1px; 
+            margin: 10px 0; 
+        }
+        .game-cell { 
+            width: 30px; 
+            height: 30px; 
+            border: 1px solid #ccc; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>音频系统修复测试</h1>
+    <div id="logs"></div>
+    
+    <div>
+        <button onclick="testAudioSystem()">测试音频系统</button>
+        <button onclick="testGameEngine()">测试GameEngine</button>
+        <button onclick="clearLogs()">清除日志</button>
+    </div>
+    
+    <!-- 创建完整的游戏容器 -->
+    <div class="game-container">
+        <h3>游戏容器</h3>
+        <div class="game-board" id="game-board"></div>
+        <div>当前分数: <span id="current-score">0</span></div>
+        <div>最高分: <span id="high-score">0</span></div>
+        <div id="game-status">准备中...</div>
+        <button id="start-btn" onclick="startGame()">开始游戏</button>
+        <button id="pause-btn">暂停</button>
+        <button id="restart-btn">重新开始</button>
+        <button id="sound-btn">音效</button>
+    </div>
+
+    <!-- 加载所有依赖 -->
+    <script src="gameModels.js"></script>
+    <script src="scoreSystem.js"></script>
+    <script src="storageManager.js"></script>
+    <script src="audioSystem.js"></script>
+    <script src="performanceOptimizer.js"></script>
+    <script src="renderer.js"></script>
+    <script src="inputHandler.js"></script>
+    <script src="gameEngine.js"></script>
+
+    <script>
+        const logsDiv = document.getElementById('logs');
+        let gameEngine = null;
+        
+        function addLog(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logsDiv.appendChild(div);
+            console.log(message);
+        }
+
+        function clearLogs() {
+            logsDiv.innerHTML = '';
+        }
+
+        async function testAudioSystem() {
+            addLog('开始测试音频系统...', 'info');
+            
+            try {
+                // 创建音频系统
+                const audioSystem = new AudioSystem();
+                addLog('✅ AudioSystem实例创建成功', 'success');
+                
+                // 检查初始状态
+                addLog(`初始状态 - isInitialized: ${audioSystem.isInitialized}`, 'info');
+                addLog(`初始状态 - isEnabled: ${audioSystem.isEnabled}`, 'info');
+                
+                // 尝试初始化（这应该在用户交互后工作）
+                addLog('尝试初始化音频系统...', 'info');
+                const initResult = await audioSystem.initialize();
+                
+                if (initResult) {
+                    addLog('✅ 音频系统初始化成功', 'success');
+                    addLog(`AudioContext状态: ${audioSystem.audioContext.state}`, 'info');
+                } else {
+                    addLog('⚠️ 音频系统初始化失败（这在某些浏览器中是正常的）', 'warning');
+                }
+                
+                // 测试resumeContext
+                addLog('测试resumeContext...', 'info');
+                const resumeResult = await audioSystem.resumeContext();
+                
+                if (resumeResult) {
+                    addLog('✅ AudioContext恢复成功', 'success');
+                } else {
+                    addLog('⚠️ AudioContext恢复失败', 'warning');
+                }
+                
+            } catch (error) {
+                addLog(`❌ 音频系统测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function testGameEngine() {
+            addLog('开始测试GameEngine...', 'info');
+            
+            try {
+                const gameContainer = document.querySelector('.game-container');
+                
+                // 创建GameEngine
+                gameEngine = createGameEngine(gameContainer);
+                addLog('✅ GameEngine实例创建成功', 'success');
+                
+                // 初始化GameEngine
+                addLog('初始化GameEngine...', 'info');
+                const initResult = await gameEngine.initialize();
+                
+                if (initResult) {
+                    addLog('✅ GameEngine初始化成功', 'success');
+                    addLog(`GameEngine状态: ${gameEngine.state}`, 'info');
+                    
+                    // 检查音频系统状态
+                    if (gameEngine.audioSystem) {
+                        addLog(`音频系统状态 - isInitialized: ${gameEngine.audioSystem.isInitialized}`, 'info');
+                        addLog(`音频系统状态 - isEnabled: ${gameEngine.audioSystem.isEnabled}`, 'info');
+                    }
+                } else {
+                    addLog('❌ GameEngine初始化失败', 'error');
+                }
+                
+            } catch (error) {
+                addLog(`❌ GameEngine测试失败: ${error.message}`, 'error');
+                addLog(`错误堆栈: ${error.stack}`, 'error');
+            }
+        }
+
+        async function startGame() {
+            if (!gameEngine) {
+                addLog('请先测试GameEngine', 'warning');
+                return;
+            }
+            
+            addLog('用户点击开始游戏（用户交互）...', 'info');
+            
+            try {
+                const result = await gameEngine.startGame();
+                
+                if (result !== false) {
+                    addLog('✅ 游戏开始成功', 'success');
+                    
+                    // 检查音频系统是否已启动
+                    if (gameEngine.audioSystem && gameEngine.audioSystem.audioContext) {
+                        addLog(`AudioContext状态: ${gameEngine.audioSystem.audioContext.state}`, 'info');
+                    }
+                } else {
+                    addLog('❌ 游戏开始失败', 'error');
+                }
+            } catch (error) {
+                addLog(`❌ 开始游戏失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('页面加载完成', 'info');
+            addLog('点击按钮开始测试音频系统修复', 'info');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>导出测试</title>
+</head>
+<body>
+    <h1>导出测试</h1>
+    <div id="results"></div>
+
+    <script src="gameModels.js"></script>
+    <script>
+        const results = document.getElementById('results');
+        
+        function addResult(message, isSuccess) {
+            const div = document.createElement('div');
+            div.style.color = isSuccess ? 'green' : 'red';
+            div.textContent = message;
+            results.appendChild(div);
+        }
+
+        // 测试导出
+        addResult('GHOST_TYPES: ' + (typeof GHOST_TYPES !== 'undefined' ? '✅' : '❌'), typeof GHOST_TYPES !== 'undefined');
+        addResult('GAME_CONFIG: ' + (typeof GAME_CONFIG !== 'undefined' ? '✅' : '❌'), typeof GAME_CONFIG !== 'undefined');
+        addResult('createInitialGameState: ' + (typeof createInitialGameState !== 'undefined' ? '✅' : '❌'), typeof createInitialGameState !== 'undefined');
+        addResult('GameGrid: ' + (typeof GameGrid !== 'undefined' ? '✅' : '❌'), typeof GameGrid !== 'undefined');
+        addResult('MatchDetector: ' + (typeof MatchDetector !== 'undefined' ? '✅' : '❌'), typeof MatchDetector !== 'undefined');
+
+        if (typeof GHOST_TYPES !== 'undefined') {
+            addResult('GHOST_TYPES内容: ' + JSON.stringify(Object.keys(GHOST_TYPES)), true);
+        }
+
+        if (typeof createInitialGameState !== 'undefined') {
+            try {
+                const gameState = createInitialGameState();
+                addResult('createInitialGameState()执行成功', true);
+                addResult('游戏状态键: ' + JSON.stringify(Object.keys(gameState)), true);
+            } catch (error) {
+                addResult('createInitialGameState()执行失败: ' + error.message, false);
+            }
+        }
+    </script>
+</body>
+</html>

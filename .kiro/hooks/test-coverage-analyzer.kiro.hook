@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "name": "Test Coverage Analyzer",
+  "description": "Monitors source file modifications and automatically analyzes changes to identify new or modified functions, checks for corresponding test coverage, generates missing test cases, runs test suites, and provides testing status reports.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "*.js",
+      "!test*.js",
+      "!unitTests.js"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A source file has been modified. Please analyze the changed file to identify any new or modified functions and methods, check if corresponding tests exist in the tests/ directory that cover these changes, generate comprehensive test cases for any missing coverage including unit tests, edge cases, error conditions, and integration tests if needed. Run the existing test suite to ensure all tests pass, update test coverage reports, identify remaining coverage gaps, and provide a summary of testing status with recommendations. Focus on maintaining high test coverage for game components, utilities, and core functionality while following the project's modular architecture patterns."
+  }
+}

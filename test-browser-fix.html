@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>浏览器环境修复测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .disabled {
+            background-color: #6c757d !important;
+            cursor: not-allowed !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <h1>🧪 浏览器环境修复测试</h1>
+        <p>这个页面用于测试所有模块在浏览器环境中是否能正确加载和初始化。</p>
+
+        <button onclick="runModuleTests()">运行模块测试</button>
+        <button onclick="runGameEngineTest()">测试GameEngine初始化</button>
+        <button onclick="clearResults()">清除结果</button>
+
+        <div id="test-results"></div>
+    </div>
+
+    <!-- 按照index.html中的顺序加载所有脚本 -->
+    <script src="gameModels.js"></script>
+    <script src="scoreSystem.js"></script>
+    <script src="storageManager.js"></script>
+    <script src="audioSystem.js"></script>
+    <script src="performanceOptimizer.js"></script>
+    <script src="renderer.js"></script>
+    <script src="inputHandler.js"></script>
+    <script src="gameEngine.js"></script>
+
+    <script>
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = message;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        function clearResults() {
+            document.getElementById('test-results').innerHTML = '';
+        }
+
+        function runModuleTests() {
+            clearResults();
+            addResult('<h3>🔍 模块加载测试</h3>', 'info');
+
+            // 测试gameModels.js导出
+            const gameModelsTests = [
+                'GHOST_TYPES', 'GAME_CONFIG', 'createInitialGameState',
+                'initializeGameGrid', 'GameGrid', 'MatchDetector', 'ChainReactionSystem'
+            ];
+
+            gameModelsTests.forEach(item => {
+                if (typeof window[item] !== 'undefined') {
+                    addResult(`✅ ${item} - 已正确导出`, 'success');
+                } else {
+                    addResult(`❌ ${item} - 导出失败`, 'error');
+                }
+            });
+
+            // 测试scoreSystem.js导出
+            const scoreSystemTests = ['ScoreSystem', 'createScoreSystem'];
+            scoreSystemTests.forEach(item => {
+                if (typeof window[item] !== 'undefined') {
+                    addResult(`✅ ${item} - 已正确导出`, 'success');
+                } else {
+                    addResult(`❌ ${item} - 导出失败`, 'error');
+                }
+            });
+
+            // 测试storageManager.js导出
+            const storageTests = ['StorageManager', 'createStorageManagerWithFallback'];
+            storageTests.forEach(item => {
+                if (typeof window[item] !== 'undefined') {
+                    addResult(`✅ ${item} - 已正确导出`, 'success');
+                } else {
+                    addResult(`❌ ${item} - 导出失败`, 'error');
+                }
+            });
+
+            // 测试audioSystem.js导出
+            const audioTests = ['AudioSystem', 'createAudioSystem'];
+            audioTests.forEach(item => {
+                if (typeof window[item] !== 'undefined') {
+                    addResult(`✅ ${item} - 已正确导出`, 'success');
+                } else {
+                    addResult(`❌ ${item} - 导出失败`, 'error');
+                }
+            });
+
+            // 测试renderer.js导出
+            const rendererTests = ['Renderer', 'createRenderer'];
+            rendererTests.forEach(item => {
+                if (typeof window[item] !== 'undefined') {
+                    addResult(`✅ ${item} - 已正确导出`, 'success');
+                } else {
+                    addResult(`❌ ${item} - 导出失败`, 'error');
+                }
+            });
+
+            // 测试inputHandler.js导出
+            const inputTests = ['InputHandler', 'createInputHandler'];
+            inputTests.forEach(item => {
+                if (typeof window[item] !== 'undefined') {
+                    addResult(`✅ ${item} - 已正确导出`, 'success');
+                } else {
+                    addResult(`❌ ${item} - 导出失败`, 'error');
+                }
+            });
+
+            // 测试gameEngine.js导出
+            const engineTests = ['GameEngine', 'createGameEngine', 'ENGINE_STATES'];
+            engineTests.forEach(item => {
+                if (typeof window[item] !== 'undefined') {
+                    addResult(`✅ ${item} - 已正确导出`, 'success');
+                } else {
+                    addResult(`❌ ${item} - 导出失败`, 'error');
+                }
+            });
+
+            addResult('<h3>📊 模块测试完成</h3>', 'info');
+        }
+
+        async function runGameEngineTest() {
+            addResult('<h3>🎮 GameEngine初始化测试</h3>', 'info');
+
+            try {
+                // 创建一个简单的游戏容器
+                const testContainer = document.createElement('div');
+                testContainer.innerHTML = `
+                    <div class="game-board"></div>
+                    <div id="current-score">0</div>
+                    <div id="high-score">0</div>
+                    <button id="start-btn">开始</button>
+                    <button id="pause-btn">暂停</button>
+                    <button id="restart-btn">重新开始</button>
+                    <button id="sound-btn">音效</button>
+                `;
+
+                addResult('📝 创建测试容器...', 'info');
+
+                // 测试createInitialGameState函数
+                if (typeof createInitialGameState === 'function') {
+                    const gameState = createInitialGameState();
+                    addResult(`✅ createInitialGameState() 成功创建游戏状态`, 'success');
+                    addResult(`<pre>游戏状态结构: ${JSON.stringify(Object.keys(gameState), null, 2)}</pre>`, 'info');
+                } else {
+                    addResult('❌ createInitialGameState 函数不可用', 'error');
+                    return;
+                }
+
+                // 测试GameEngine创建
+                if (typeof createGameEngine === 'function') {
+                    addResult('📝 创建GameEngine实例...', 'info');
+                    const gameEngine = createGameEngine(testContainer);
+                    addResult('✅ GameEngine实例创建成功', 'success');
+
+                    // 测试初始化
+                    addResult('📝 初始化GameEngine...', 'info');
+                    const initResult = await gameEngine.initialize();
+
+                    if (initResult) {
+                        addResult('🎉 GameEngine初始化成功！', 'success');
+
+                        // 获取状态信息
+                        const status = gameEngine.getStatus();
+                        addResult(`<pre>GameEngine状态: ${JSON.stringify(status, null, 2)}</pre>`, 'info');
+
+                        // 清理
+                        gameEngine.destroy();
+                        addResult('✅ GameEngine清理完成', 'success');
+                    } else {
+                        addResult('❌ GameEngine初始化失败', 'error');
+                    }
+                } else {
+                    addResult('❌ createGameEngine 函数不可用', 'error');
+                }
+
+            } catch (error) {
+                addResult(`❌ GameEngine测试失败: ${error.message}`, 'error');
+                addResult(`<pre>错误堆栈:\n${error.stack}</pre>`, 'error');
+            }
+
+            addResult('<h3>🏁 GameEngine测试完成</h3>', 'info');
+        }
+
+        // 页面加载完成后自动运行模块测试
+        document.addEventListener('DOMContentLoaded', function () {
+            addResult('🚀 页面加载完成，所有脚本已加载', 'success');
+            addResult('点击按钮开始测试各个模块的导出情况', 'info');
+        });
+    </script>
+</body>
+
+</html>

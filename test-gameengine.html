@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameEngine测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+        }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #6c757d; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎮 GameEngine测试页面</h1>
+        
+        <div class="test-section">
+            <h2>基础测试</h2>
+            <button onclick="testBasicFunctionality()">测试基础功能</button>
+            <button onclick="testInitialization()">测试初始化</button>
+            <button onclick="testGameStates()">测试游戏状态</button>
+            <div id="basic-results"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>游戏控制测试</h2>
+            <button onclick="testGameControls()">测试游戏控制</button>
+            <button onclick="testAudioSystem()">测试音频系统</button>
+            <button onclick="testScoreSystem()">测试分数系统</button>
+            <div id="control-results"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>性能测试</h2>
+            <button onclick="testPerformance()">测试性能监控</button>
+            <button onclick="testMemoryUsage()">测试内存使用</button>
+            <div id="performance-results"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>实际游戏测试</h2>
+            <div id="mini-game-container" style="min-height: 200px; border: 2px dashed #ccc; padding: 20px; text-align: center;">
+                <p>点击"创建迷你游戏"来测试完整的GameEngine功能</p>
+                <button onclick="createMiniGame()">创建迷你游戏</button>
+                <button onclick="destroyMiniGame()" disabled id="destroy-btn">销毁游戏</button>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>测试日志</h2>
+            <div id="test-log" style="background: #f8f9fa; padding: 10px; border-radius: 5px; max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 12px;"></div>
+            <button onclick="clearLog()">清除日志</button>
+        </div>
+    </div>
+
+    <!-- 引入所有必要的脚本 -->
+    <script src="gameModels.js"></script>
+    <script src="scoreSystem.js"></script>
+    <script src="storageManager.js"></script>
+    <script src="audioSystem.js"></script>
+    <script src="renderer.js"></script>
+    <script src="inputHandler.js"></script>
+    <script src="gameEngine.js"></script>
+
+    <script>
+        let testGameEngine = null;
+        let testResults = [];
+
+        // 日志函数
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            testResults.push({ message: logEntry, type });
+            
+            const logDiv = document.getElementById('test-log');
+            const logElement = document.createElement('div');
+            logElement.textContent = logEntry;
+            logElement.style.color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'black';
+            logDiv.appendChild(logElement);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            
+            console.log(logEntry);
+        }
+
+        function clearLog() {
+            document.getElementById('test-log').innerHTML = '';
+            testResults = [];
+        }
+
+        function showResult(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.textContent = message;
+            container.appendChild(resultDiv);
+            
+            log(message, type);
+        }
+
+        // 基础功能测试
+        function testBasicFunctionality() {
+            const container = document.getElementById('basic-results');
+            container.innerHTML = '';
+            
+            try {
+                // 测试类是否存在
+                if (typeof GameEngine === 'undefined') {
+                    throw new Error('GameEngine类未定义');
+                }
+                showResult('basic-results', '✓ GameEngine类存在', 'success');
+                
+                // 测试工厂函数
+                if (typeof createGameEngine === 'undefined') {
+                    throw new Error('createGameEngine函数未定义');
+                }
+                showResult('basic-results', '✓ createGameEngine函数存在', 'success');
+                
+                // 测试常量
+                if (typeof ENGINE_STATES === 'undefined') {
+                    throw new Error('ENGINE_STATES常量未定义');
+                }
+                showResult('basic-results', '✓ ENGINE_STATES常量存在', 'success');
+                
+                showResult('basic-results', '✓ 基础功能测试通过', 'success');
+                
+            } catch (error) {
+                showResult('basic-results', '✗ 基础功能测试失败: ' + error.message, 'error');
+            }
+        }
+
+        // 初始化测试
+        async function testInitialization() {
+            const container = document.getElementById('basic-results');
+            
+            try {
+                // 创建临时容器
+                const tempContainer = document.createElement('div');
+                tempContainer.innerHTML = `
+                    <div class="game-board"></div>
+                    <span id="current-score">0</span>
+                    <span id="high-score">0</span>
+                    <div id="game-status"></div>
+                `;
+                
+                // 创建GameEngine实例
+                const engine = createGameEngine(tempContainer);
+                showResult('basic-results', '✓ GameEngine实例创建成功', 'success');
+                
+                // 测试初始化
+                const initResult = await engine.initialize();
+                if (initResult) {
+                    showResult('basic-results', '✓ GameEngine初始化成功', 'success');
+                } else {
+                    throw new Error('初始化返回false');
+                }
+                
+                // 测试状态
+                const status = engine.getStatus();
+                showResult('basic-results', `✓ 引擎状态: ${status.state}`, 'info');
+                
+                // 清理
+                engine.destroy();
+                showResult('basic-results', '✓ GameEngine销毁成功', 'success');
+                
+            } catch (error) {
+                showResult('basic-results', '✗ 初始化测试失败: ' + error.message, 'error');
+            }
+        }
+
+        // 游戏状态测试
+        function testGameStates() {
+            const container = document.getElementById('basic-results');
+            
+            try {
+                const states = Object.keys(ENGINE_STATES);
+                showResult('basic-results', `✓ 游戏状态数量: ${states.length}`, 'info');
+                showResult('basic-results', `✓ 游戏状态: ${states.join(', ')}`, 'info');
+                
+            } catch (error) {
+                showResult('basic-results', '✗ 游戏状态测试失败: ' + error.message, 'error');
+            }
+        }
+
+        // 游戏控制测试
+        async function testGameControls() {
+            const container = document.getElementById('control-results');
+            container.innerHTML = '';
+            
+            try {
+                // 创建临时容器
+                const tempContainer = document.createElement('div');
+                tempContainer.innerHTML = `
+                    <div class="game-board"></div>
+                    <span id="current-score">0</span>
+                    <span id="high-score">0</span>
+                    <div id="game-status"></div>
+                    <button id="start-btn">开始</button>
+                    <button id="pause-btn">暂停</button>
+                    <button id="restart-btn">重新开始</button>
+                    <button id="sound-btn">音效</button>
+                `;
+                
+                const engine = createGameEngine(tempContainer);
+                await engine.initialize();
+                
+                // 测试开始游戏
+                const startResult = engine.startGame();
+                showResult('control-results', `✓ 开始游戏: ${startResult}`, startResult ? 'success' : 'error');
+                
+                // 测试暂停
+                const pauseResult = engine.pauseGame();
+                showResult('control-results', `✓ 暂停游戏: ${pauseResult}`, pauseResult ? 'success' : 'error');
+                
+                // 测试继续
+                const resumeResult = engine.resumeGame();
+                showResult('control-results', `✓ 继续游戏: ${resumeResult}`, resumeResult ? 'success' : 'error');
+                
+                // 测试重新开始
+                const restartResult = engine.restartGame();
+                showResult('control-results', `✓ 重新开始: ${restartResult}`, restartResult ? 'success' : 'error');
+                
+                engine.destroy();
+                
+            } catch (error) {
+                showResult('control-results', '✗ 游戏控制测试失败: ' + error.message, 'error');
+            }
+        }
+
+        // 音频系统测试
+        function testAudioSystem() {
+            const container = document.getElementById('control-results');
+            
+            try {
+                if (typeof AudioSystem === 'undefined') {
+                    throw new Error('AudioSystem类未定义');
+                }
+                
+                const audioSystem = new AudioSystem();
+                showResult('control-results', '✓ AudioSystem创建成功', 'success');
+                
+                const status = audioSystem.getStatus();
+                showResult('control-results', `✓ 音频支持: ${status.isSupported}`, status.isSupported ? 'success' : 'info');
+                
+            } catch (error) {
+                showResult('control-results', '✗ 音频系统测试失败: ' + error.message, 'error');
+            }
+        }
+
+        // 分数系统测试
+        function testScoreSystem() {
+            const container = document.getElementById('control-results');
+            
+            try {
+                if (typeof ScoreSystem === 'undefined') {
+                    throw new Error('ScoreSystem类未定义');
+                }
+                
+                const scoreSystem = new ScoreSystem();
+                scoreSystem.initialize();
+                showResult('control-results', '✓ ScoreSystem创建成功', 'success');
+                
+                // 测试分数计算
+                scoreSystem.addScore(100);
+                const score = scoreSystem.getCurrentScore();
+                showResult('control-results', `✓ 分数计算: ${score}`, score === 100 ? 'success' : 'error');
+                
+            } catch (error) {
+                showResult('control-results', '✗ 分数系统测试失败: ' + error.message, 'error');
+            }
+        }
+
+        // 性能测试
+        async function testPerformance() {
+            const container = document.getElementById('performance-results');
+            container.innerHTML = '';
+            
+            try {
+                const tempContainer = document.createElement('div');
+                tempContainer.innerHTML = `
+                    <div class="game-board"></div>
+                    <span id="current-score">0</span>
+                    <span id="high-score">0</span>
+                    <div id="game-status"></div>
+                `;
+                
+                const engine = createGameEngine(tempContainer);
+                await engine.initialize();
+                
+                const stats = engine.getPerformanceStats();
+                showResult('performance-results', `✓ 性能统计获取成功`, 'success');
+                showResult('performance-results', `✓ 帧数: ${stats.frameCount}`, 'info');
+                
+                engine.destroy();
+                
+            } catch (error) {
+                showResult('performance-results', '✗ 性能测试失败: ' + error.message, 'error');
+            }
+        }
+
+        // 内存使用测试
+        function testMemoryUsage() {
+            const container = document.getElementById('performance-results');
+            
+            try {
+                if (performance.memory) {
+                    const memory = performance.memory;
+                    const used = (memory.usedJSHeapSize / 1024 / 1024).toFixed(2);
+                    const total = (memory.totalJSHeapSize / 1024 / 1024).toFixed(2);
+                    showResult('performance-results', `✓ 内存使用: ${used}MB / ${total}MB`, 'info');
+                } else {
+                    showResult('performance-results', '! 浏览器不支持内存监控', 'info');
+                }
+                
+            } catch (error) {
+                showResult('performance-results', '✗ 内存测试失败: ' + error.message, 'error');
+            }
+        }
+
+        // 创建迷你游戏
+        async function createMiniGame() {
+            const container = document.getElementById('mini-game-container');
+            
+            try {
+                if (testGameEngine) {
+                    testGameEngine.destroy();
+                }
+                
+                // 创建游戏界面
+                container.innerHTML = `
+                    <h3>迷你游戏测试</h3>
+                    <div style="display: flex; justify-content: space-between; margin: 10px 0;">
+                        <span>分数: <span id="current-score">0</span></span>
+                        <span>最高分: <span id="high-score">0</span></span>
+                    </div>
+                    <div class="game-board" style="display: grid; grid-template-columns: repeat(8, 30px); grid-gap: 2px; justify-content: center; margin: 20px 0;"></div>
+                    <div>
+                        <button id="start-btn" onclick="testGameEngine.startGame()">开始游戏</button>
+                        <button id="pause-btn" onclick="testGameEngine.togglePause()">暂停</button>
+                        <button id="restart-btn" onclick="testGameEngine.restartGame()">重新开始</button>
+                        <button id="sound-btn" onclick="testGameEngine.toggleSound()">音效</button>
+                    </div>
+                    <div id="game-status" style="margin-top: 10px; font-size: 14px;"></div>
+                    <button onclick="destroyMiniGame()" id="destroy-btn">销毁游戏</button>
+                `;
+                
+                // 创建GameEngine
+                testGameEngine = createGameEngine(container);
+                await testGameEngine.initialize();
+                
+                document.getElementById('destroy-btn').disabled = false;
+                log('迷你游戏创建成功', 'success');
+                
+            } catch (error) {
+                container.innerHTML = `<p style="color: red;">创建迷你游戏失败: ${error.message}</p>`;
+                log('创建迷你游戏失败: ' + error.message, 'error');
+            }
+        }
+
+        // 销毁迷你游戏
+        function destroyMiniGame() {
+            const container = document.getElementById('mini-game-container');
+            
+            try {
+                if (testGameEngine) {
+                    testGameEngine.destroy();
+                    testGameEngine = null;
+                }
+                
+                container.innerHTML = `
+                    <p>迷你游戏已销毁</p>
+                    <button onclick="createMiniGame()">创建迷你游戏</button>
+                    <button onclick="destroyMiniGame()" disabled id="destroy-btn">销毁游戏</button>
+                `;
+                
+                log('迷你游戏销毁成功', 'success');
+                
+            } catch (error) {
+                log('销毁迷你游戏失败: ' + error.message, 'error');
+            }
+        }
+
+        // 页面加载完成后运行基础测试
+        window.addEventListener('load', () => {
+            log('测试页面加载完成', 'info');
+            testBasicFunctionality();
+        });
+    </script>
+</body>
+</html>

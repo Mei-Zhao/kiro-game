@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GameEngine导出测试</title>
+</head>
+<body>
+    <h1>GameEngine导出测试</h1>
+    <div id="results"></div>
+
+    <!-- 按照正确顺序加载依赖 -->
+    <script src="gameModels.js"></script>
+    <script src="scoreSystem.js"></script>
+    <script src="storageManager.js"></script>
+    <script src="audioSystem.js"></script>
+    <script src="performanceOptimizer.js"></script>
+    <script src="renderer.js"></script>
+    <script src="inputHandler.js"></script>
+    <script src="gameEngine.js"></script>
+
+    <script>
+        const results = document.getElementById('results');
+        
+        function addResult(message, isSuccess) {
+            const div = document.createElement('div');
+            div.style.color = isSuccess ? 'green' : 'red';
+            div.style.margin = '5px 0';
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+
+        // 测试GameEngine相关导出
+        addResult('GameEngine: ' + (typeof GameEngine !== 'undefined' ? '✅' : '❌'), typeof GameEngine !== 'undefined');
+        addResult('createGameEngine: ' + (typeof createGameEngine !== 'undefined' ? '✅' : '❌'), typeof createGameEngine !== 'undefined');
+        addResult('ENGINE_STATES: ' + (typeof ENGINE_STATES !== 'undefined' ? '✅' : '❌'), typeof ENGINE_STATES !== 'undefined');
+        addResult('ENGINE_CONFIG: ' + (typeof ENGINE_CONFIG !== 'undefined' ? '✅' : '❌'), typeof ENGINE_CONFIG !== 'undefined');
+
+        // 测试依赖项
+        addResult('<br><strong>依赖项测试:</strong>', true);
+        addResult('createInitialGameState: ' + (typeof createInitialGameState !== 'undefined' ? '✅' : '❌'), typeof createInitialGameState !== 'undefined');
+        addResult('createScoreSystem: ' + (typeof createScoreSystem !== 'undefined' ? '✅' : '❌'), typeof createScoreSystem !== 'undefined');
+        addResult('createStorageManagerWithFallback: ' + (typeof createStorageManagerWithFallback !== 'undefined' ? '✅' : '❌'), typeof createStorageManagerWithFallback !== 'undefined');
+
+        // 如果所有依赖都可用，尝试创建GameEngine
+        if (typeof createGameEngine !== 'undefined' && typeof createInitialGameState !== 'undefined') {
+            addResult('<br><strong>GameEngine创建测试:</strong>', true);
+            
+            try {
+                // 创建一个简单的容器
+                const testContainer = document.createElement('div');
+                testContainer.innerHTML = `
+                    <div class="game-board"></div>
+                    <div id="current-score">0</div>
+                    <div id="high-score">0</div>
+                    <button id="start-btn">开始</button>
+                    <button id="pause-btn">暂停</button>
+                    <button id="restart-btn">重新开始</button>
+                    <button id="sound-btn">音效</button>
+                `;
+                
+                const gameEngine = createGameEngine(testContainer);
+                addResult('✅ GameEngine实例创建成功', true);
+                addResult('GameEngine状态: ' + gameEngine.state, true);
+                
+                // 测试初始化
+                gameEngine.initialize().then(success => {
+                    if (success) {
+                        addResult('✅ GameEngine初始化成功！', true);
+                        const status = gameEngine.getStatus();
+                        addResult('当前状态: ' + status.state, true);
+                        addResult('初始分数: ' + status.score, true);
+                        
+                        // 清理
+                        gameEngine.destroy();
+                        addResult('✅ GameEngine清理完成', true);
+                    } else {
+                        addResult('❌ GameEngine初始化失败', false);
+                    }
+                }).catch(error => {
+                    addResult('❌ GameEngine初始化错误: ' + error.message, false);
+                });
+                
+            } catch (error) {
+                addResult('❌ GameEngine创建失败: ' + error.message, false);
+            }
+        } else {
+            addResult('❌ 缺少必要的依赖，无法测试GameEngine创建', false);
+        }
+    </script>
+</body>
+</html>

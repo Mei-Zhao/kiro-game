@@ -1,0 +1,1439 @@
+/* CSS Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    color: #333;
+}
+
+/* Game Container */
+.game-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+/* Game Header */
+.game-header {
+    margin-bottom: 1.5rem;
+}
+
+.game-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #4a5568;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.5rem;
+}
+
+/* Score Section */
+.score-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 12px;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+}
+
+.score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.score-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.score-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #4a5568;
+    transition: all 0.3s ease;
+}
+
+.score-rank {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+}
+
+/* Game Stats Section */
+.game-stats-section {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    min-height: 2rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+}
+
+.chain-indicator {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+    animation: pulse 1s infinite;
+}
+
+.combo-indicator {
+    background: linear-gradient(135deg, #feca57, #ff9ff3);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(254, 202, 87, 0.3);
+    animation: bounce 0.6s infinite alternate;
+}
+
+.milestone-indicator {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+/* Score Animation Effects */
+@keyframes scoreIncrease {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); color: #48bb78; }
+    100% { transform: scale(1); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes bounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-3px); }
+}
+
+.score-animation {
+    animation: scoreIncrease 0.6s ease-out;
+}
+
+/* Floating Score Effect */
+.floating-score {
+    position: absolute;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #48bb78;
+    pointer-events: none;
+    z-index: 1000;
+    animation: floatUp 1.2s ease-out forwards;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px) scale(1.2);
+    }
+}
+
+/* Control Section */
+.control-section {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.control-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    min-width: 100px;
+}
+
+.control-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.control-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.control-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Game Board Container */
+.game-board-container {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+/* 8x8 Game Grid */
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    gap: 2px;
+    background: #4a5568;
+    border-radius: 12px;
+    padding: 8px;
+    width: 400px;
+    height: 400px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Game Cell Styles */
+.game-cell {
+    background: #f7fafc;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    /* 性能优化 - 使用transform和opacity进行动画 */
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0); /* 强制硬件加速 */
+    /* 优化过渡效果 - 只对transform和opacity进行过渡 */
+    transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.game-cell:hover {
+    background: #e2e8f0;
+    transform: scale(1.05) translateZ(0);
+}
+
+.game-cell.hover {
+    background: #e2e8f0;
+    transform: scale(1.05) translateZ(0);
+}
+
+.game-cell.selected {
+    background: #fed7d7;
+    border: 2px solid #f56565;
+    transform: scale(1.1) translateZ(0);
+    box-shadow: 0 0 0 3px rgba(245, 101, 101, 0.3);
+}
+
+.game-cell.highlighted {
+    background: #c6f6d5;
+    border: 2px solid #48bb78;
+    transform: translateZ(0);
+}
+
+.game-cell.swap-preview {
+    background: #bee3f8;
+    border: 2px solid #3182ce;
+    transform: scale(1.05) translateZ(0);
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.3);
+}
+
+/* Animation Classes */
+.game-cell.removing {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+.game-cell.falling {
+    animation: fallDown 0.4s ease-in forwards;
+}
+
+.game-cell.appearing {
+    animation: fadeIn 0.3s ease-in forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        transform: scale(1) translateZ(0);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.1) translateZ(0);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.3) translateZ(0);
+    }
+}
+
+@keyframes fallDown {
+    0% {
+        transform: translateY(-100%) translateZ(0);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(0) translateZ(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3) translateZ(0);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1) translateZ(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateZ(0);
+    }
+}
+
+/* 交换动画 - 优化使用transform */
+@keyframes swapPulse {
+    0% {
+        transform: scale(1) translateZ(0);
+    }
+    50% {
+        transform: scale(1.1) translateZ(0);
+    }
+    100% {
+        transform: scale(1) translateZ(0);
+    }
+}
+
+.game-cell.swapping {
+    animation: swapPulse 0.3s ease-in-out;
+}
+
+/* 无效移动动画 - 优化使用transform */
+@keyframes invalidShake {
+    0%, 100% {
+        transform: translateX(0) translateZ(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-3px) translateZ(0);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(3px) translateZ(0);
+    }
+}
+
+.game-cell.invalid-move {
+    animation: invalidShake 0.6s ease-in-out;
+    background-color: #fed7d7 !important;
+}
+
+/* 提示动画 */
+@keyframes hintPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(72, 187, 120, 0.7);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(72, 187, 120, 0);
+    }
+}
+
+.game-cell.hint-pulse {
+    animation: hintPulse 1s ease-in-out infinite;
+}
+
+/* 连锁反应动画 */
+@keyframes chainPulse {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.5);
+    }
+}
+
+/* 屏幕震动效果 */
+@keyframes screenShake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+    }
+}
+
+.game-board.screen-shake {
+    animation: screenShake 0.5s ease-in-out;
+}
+
+/* 分数增加动画 */
+@keyframes scoreFloat {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+}
+
+/* 粒子动画 */
+@keyframes particleFloat0 {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-20px, -30px) scale(0.5);
+    }
+}
+
+@keyframes particleFloat1 {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(20px, -30px) scale(0.5);
+    }
+}
+
+@keyframes particleFloat2 {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-30px, -10px) scale(0.5);
+    }
+}
+
+@keyframes particleFloat3 {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(30px, -10px) scale(0.5);
+    }
+}
+
+@keyframes particleFloat4 {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-10px, -40px) scale(0.5);
+    }
+}
+
+@keyframes particleFloat5 {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(10px, -40px) scale(0.5);
+    }
+}
+
+/* 游戏结束效果 */
+.game-board.game-over {
+    animation: gameOverPulse 3s ease-in-out;
+}
+
+@keyframes gameOverPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Game Status */
+.game-status {
+    background: rgba(74, 85, 104, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.game-status p {
+    color: #4a5568;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Responsive Design - Tablet */
+@media (max-width: 768px) {
+    .game-container {
+        padding: 1.5rem;
+        margin: 0.5rem;
+    }
+    
+    .game-header h1 {
+        font-size: 2rem;
+    }
+    
+    .game-board {
+        width: 350px;
+        height: 350px;
+    }
+    
+    .game-cell {
+        font-size: 1.6rem;
+    }
+    
+    .control-section {
+        gap: 0.5rem;
+    }
+    
+    .control-btn {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
+        min-width: 90px;
+    }
+}
+
+/* Responsive Design - Mobile */
+@media (max-width: 480px) {
+    body {
+        padding: 0.5rem;
+    }
+    
+    .game-container {
+        padding: 1rem;
+        border-radius: 16px;
+    }
+    
+    .game-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .score-section {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.75rem;
+    }
+    
+    .score-item {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .game-board {
+        width: 300px;
+        height: 300px;
+        gap: 1px;
+        padding: 6px;
+    }
+    
+    .game-cell {
+        font-size: 1.4rem;
+        border-radius: 6px;
+    }
+    
+    .control-section {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .control-btn {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .game-status {
+        padding: 0.75rem;
+    }
+    
+    .game-status p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+    .game-board {
+        width: 280px;
+        height: 280px;
+    }
+    
+    .game-cell {
+        font-size: 1.2rem;
+    }
+    
+    .game-header h1 {
+        font-size: 1.6rem;
+    }
+}
+
+/* Touch-specific styles */
+@media (hover: none) and (pointer: coarse) {
+    .game-cell:hover {
+        background: #f7fafc;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .game-cell:active {
+        background: #e2e8f0;
+        transform: scale(0.95);
+    }
+    
+    .game-cell.selected {
+        background: #fed7d7;
+        border: 3px solid #f56565;
+        transform: scale(1.1);
+        box-shadow: 0 0 0 4px rgba(245, 101, 101, 0.4);
+    }
+    
+    .game-cell.swap-preview {
+        background: #bee3f8;
+        border: 3px solid #3182ce;
+        transform: scale(1.05);
+        box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.4);
+    }
+    
+    .control-btn:hover:not(:disabled) {
+        transform: none;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    .control-btn:active:not(:disabled) {
+        transform: scale(0.95);
+    }
+    
+    /* 增大触摸目标 */
+    .game-cell {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .control-btn {
+        min-height: 44px;
+        padding: 0.75rem 1.25rem;
+    }
+}
+
+/* 触摸设备优化 */
+@media (pointer: coarse) {
+    /* 防止触摸时的高亮 */
+    .game-cell {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    /* 触摸反馈动画 */
+    .game-cell.touch-feedback {
+        animation: touchPulse 0.2s ease-out;
+    }
+    
+    @keyframes touchPulse {
+        0% {
+            transform: scale(1) translateZ(0);
+        }
+        50% {
+            transform: scale(0.95) translateZ(0);
+        }
+        100% {
+            transform: scale(1) translateZ(0);
+        }
+    }
+    
+    /* 增强的触摸反馈 */
+    .game-cell.touch-active {
+        background: #e2e8f0;
+        transform: scale(0.95) translateZ(0);
+        transition: all 0.1s ease;
+    }
+    
+    .game-cell.touch-drag {
+        background: #bee3f8;
+        border: 2px solid #3182ce;
+        transform: scale(1.05) translateZ(0);
+        box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.3);
+        z-index: 10;
+    }
+    
+    /* 触摸轨迹指示器 */
+    .touch-trail {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: radial-gradient(circle, rgba(49, 130, 206, 0.6) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 1000;
+        animation: touchTrailFade 0.5s ease-out forwards;
+    }
+    
+    @keyframes touchTrailFade {
+        0% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(2);
+        }
+    }
+}
+
+/* 移动端手势提示 */
+.gesture-hint {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.gesture-hint.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.gesture-hint::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid rgba(0, 0, 0, 0.8);
+}
+
+/* 触摸区域扩展 */
+@media (max-width: 768px) {
+    .game-cell {
+        position: relative;
+    }
+    
+    .game-cell::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        z-index: -1;
+    }
+    
+    /* 触摸辅助线 */
+    .touch-guide-line {
+        position: absolute;
+        background: rgba(49, 130, 206, 0.3);
+        pointer-events: none;
+        z-index: 5;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+    
+    .touch-guide-line.horizontal {
+        height: 2px;
+        left: 0;
+        right: 0;
+    }
+    
+    .touch-guide-line.vertical {
+        width: 2px;
+        top: 0;
+        bottom: 0;
+    }
+    
+    .touch-guide-line.show {
+        opacity: 1;
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .game-cell {
+        font-size: 1.9rem;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus styles for keyboard navigation */
+.control-btn:focus {
+    outline: 2px solid #4299e1;
+    outline-offset: 2px;
+}
+
+.game-cell:focus {
+    outline: 2px solid #4299e1;
+    outline-offset: 1px;
+}
+
+/* Audio Controls Styles */
+.volume-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+.volume-controls .control-btn {
+    padding: 6px 10px;
+    font-size: 14px;
+    min-width: auto;
+    background: rgba(102, 126, 234, 0.8);
+    border-radius: 6px;
+}
+
+.volume-controls .control-btn:hover:not(:disabled) {
+    background: rgba(102, 126, 234, 1);
+    transform: translateY(-1px);
+}
+
+#volume-display {
+    min-width: 50px;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+#volume-display:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.advanced-audio-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.advanced-audio-controls .control-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+    min-width: auto;
+    background: rgba(118, 75, 162, 0.7);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.advanced-audio-controls .control-btn:hover:not(:disabled) {
+    background: rgba(118, 75, 162, 1);
+    transform: translateY(-1px);
+}
+
+/* Audio Status Indicators */
+.audio-status-muted {
+    color: #ff6b6b !important;
+}
+
+.audio-status-low {
+    color: #ffd43b !important;
+}
+
+.audio-status-medium {
+    color: #51cf66 !important;
+}
+
+.audio-status-high {
+    color: #339af0 !important;
+}
+
+.audio-status-max {
+    color: #845ef7 !important;
+}
+
+/* Audio Control Animations */
+@keyframes volumePulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.volume-controls.volume-changed {
+    animation: volumePulse 0.3s ease-out;
+}
+
+@keyframes audioFeedback {
+    0% {
+        box-shadow: 0 0 0 0 rgba(81, 207, 102, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(81, 207, 102, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(81, 207, 102, 0);
+    }
+}
+
+.control-btn.audio-feedback {
+    animation: audioFeedback 0.6s ease-out;
+}
+
+/* 按钮状态指示器 */
+.control-btn.active {
+    background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+    box-shadow: 0 4px 12px rgba(64, 192, 87, 0.4);
+}
+
+.control-btn.warning {
+    background: linear-gradient(135deg, #ffd43b 0%, #fab005 100%);
+    color: #333;
+    box-shadow: 0 4px 12px rgba(250, 176, 5, 0.4);
+}
+
+.control-btn.danger {
+    background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%);
+    box-shadow: 0 4px 12px rgba(250, 82, 82, 0.4);
+}
+
+/* 按钮加载状态 */
+.control-btn.loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+.control-btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: buttonSpin 1s linear infinite;
+}
+
+@keyframes buttonSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 加载状态和过渡效果 */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.loading-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+.loading-text {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.loading-progress {
+    width: 200px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+.loading-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 操作反馈和状态提示 */
+.feedback-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    max-width: 300px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.feedback-toast.show {
+    transform: translateX(0);
+}
+
+.feedback-toast.success {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+}
+
+.feedback-toast.error {
+    background: linear-gradient(135deg, #f56565, #e53e3e);
+}
+
+.feedback-toast.warning {
+    background: linear-gradient(135deg, #ed8936, #dd6b20);
+}
+
+.feedback-toast.info {
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+}
+
+/* 游戏状态指示器 */
+.game-state-indicator {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 100;
+}
+
+.game-state-indicator.playing {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color: white;
+}
+
+.game-state-indicator.paused {
+    background: linear-gradient(135deg, #ed8936, #dd6b20);
+    color: white;
+}
+
+.game-state-indicator.game-over {
+    background: linear-gradient(135deg, #f56565, #e53e3e);
+    color: white;
+}
+
+.game-state-indicator.loading {
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+    color: white;
+}
+
+/* 过渡动画 */
+.fade-in {
+    animation: fadeInAnimation 0.5s ease-out;
+}
+
+.fade-out {
+    animation: fadeOutAnimation 0.5s ease-out;
+}
+
+.slide-in-up {
+    animation: slideInUp 0.5s ease-out;
+}
+
+.slide-in-down {
+    animation: slideInDown 0.5s ease-out;
+}
+
+.scale-in {
+    animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes fadeInAnimation {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOutAnimation {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 键盘导航提示 */
+.keyboard-hint {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+    max-width: 300px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.keyboard-hint.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.keyboard-hint kbd {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* 键盘焦点样式增强 */
+.game-cell:focus {
+    outline: 3px solid #4299e1;
+    outline-offset: 2px;
+    z-index: 10;
+}
+
+.control-btn:focus {
+    outline: 3px solid #4299e1;
+    outline-offset: 2px;
+}
+
+/* 键盘导航指示器 */
+.keyboard-navigation-active .game-cell {
+    transition: all 0.2s ease;
+}
+
+.keyboard-navigation-active .game-cell:focus {
+    background: #e2e8f0;
+    transform: scale(1.05) translateZ(0);
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}
+
+/* 键盘快捷键面板 */
+.keyboard-shortcuts-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+    max-width: 400px;
+    width: 90%;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -50%) scale(0.9);
+    transition: all 0.3s ease;
+}
+
+.keyboard-shortcuts-panel.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.keyboard-shortcuts-panel h3 {
+    margin: 0 0 16px 0;
+    color: #4a5568;
+    font-size: 18px;
+    text-align: center;
+}
+
+.shortcut-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.shortcut-item:last-child {
+    border-bottom: none;
+}
+
+.shortcut-key {
+    background: #f7fafc;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
+}
+
+.shortcut-description {
+    color: #718096;
+    font-size: 14px;
+}
+
+.shortcuts-close-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #a0aec0;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: color 0.2s ease;
+}
+
+.shortcuts-close-btn:hover {
+    color: #4a5568;
+}
+
+/* Responsive Audio Controls */
+@media (max-width: 768px) {
+    .volume-controls {
+        gap: 6px;
+        padding: 6px 10px;
+    }
+    
+    .volume-controls .control-btn {
+        padding: 5px 8px;
+        font-size: 13px;
+    }
+    
+    #volume-display {
+        min-width: 45px;
+        font-size: 11px;
+        padding: 3px 6px;
+    }
+    
+    .advanced-audio-controls {
+        gap: 4px;
+        padding: 4px 8px;
+    }
+    
+    .advanced-audio-controls .control-btn {
+        padding: 3px 6px;
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .volume-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+        padding: 8px;
+    }
+    
+    .advanced-audio-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+        padding: 6px;
+    }
+    
+    .volume-controls .control-btn,
+    .advanced-audio-controls .control-btn {
+        flex: 1;
+        min-width: 60px;
+    }
+    
+    #volume-display {
+        flex: 1;
+        min-width: 80px;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background: white;
+    }
+    
+    .game-container {
+        box-shadow: none;
+        background: white;
+    }
+    
+    .control-section,
+    .volume-controls,
+    .advanced-audio-controls {
+        display: none;
+    }
+}
